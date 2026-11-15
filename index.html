@@ -1,0 +1,229 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+<title>Harcamalarım</title>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Harcamalarım">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="theme-color" content="#f5f6f8" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#111214" media="(prefers-color-scheme: dark)">
+<link rel="apple-touch-icon" href="icon-180.png">
+<link rel="icon" href="icon-192.png">
+<link rel="manifest" href="manifest.webmanifest">
+<style>
+:root{--bg:#f5f6f8;--card:#fff;--ink:#16181d;--muted:#6b7280;--line:#e6e8ec;--accent:#16a34a;--accent-ink:#fff;--key:#fff;--danger:#dc2626;--bar:#e9ecef}
+@media (prefers-color-scheme:dark){:root{--bg:#111214;--card:#1c1d21;--ink:#f2f3f5;--muted:#9aa0a8;--line:#2b2d33;--accent:#22c55e;--accent-ink:#06210f;--key:#26282d;--danger:#f87171;--bar:#2b2d33}}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;height:100%;background:var(--bg);color:var(--ink);font:17px/1.35 -apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",sans-serif;-webkit-user-select:none;user-select:none;overscroll-behavior:none}
+button{font:inherit;color:inherit;border:0;background:none;cursor:pointer}
+.app{display:flex;flex-direction:column;height:100%;padding-top:env(safe-area-inset-top)}
+.screen{flex:1;overflow-y:auto;display:none;padding:12px 16px 16px;-webkit-overflow-scrolling:touch}
+.screen.on{display:flex;flex-direction:column}
+/* sekme çubuğu */
+.tabs{display:flex;border-top:1px solid var(--line);background:var(--card);padding-bottom:env(safe-area-inset-bottom)}
+.tabs button{flex:1;padding:8px 0 6px;display:flex;flex-direction:column;align-items:center;gap:2px;font-size:11px;color:var(--muted)}
+.tabs button .i{font-size:22px;line-height:1}
+.tabs button.on{color:var(--accent);font-weight:600}
+/* ekle ekranı */
+.amount{text-align:center;padding:10px 0 6px}
+.amount .v{font-size:52px;font-weight:700;letter-spacing:-1px;font-variant-numeric:tabular-nums}
+.amount .v.empty{color:var(--muted)}
+.amount .h{font-size:14px;color:var(--muted);min-height:20px}
+.meta{display:flex;gap:8px;justify-content:center;margin-bottom:10px}
+.chip{background:var(--card);border:1px solid var(--line);border-radius:999px;padding:6px 14px;font-size:15px;position:relative;overflow:hidden}
+.chip input{position:absolute;inset:0;opacity:0;width:100%;font-size:16px}
+.keys{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px}
+.keys button{background:var(--key);border-radius:14px;height:52px;font-size:24px;font-weight:500;box-shadow:0 1px 0 var(--line)}
+.keys button:active{transform:scale(.96);opacity:.7}
+.lbl{font-size:13px;color:var(--muted);margin:2px 2px 8px;text-transform:uppercase;letter-spacing:.4px}
+.cats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.cats button{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:10px 4px;display:flex;flex-direction:column;align-items:center;gap:4px;font-size:14px}
+.cats button .e{font-size:28px;line-height:1}
+.cats button:active{transform:scale(.96)}
+.cats.off button{opacity:.45}
+/* ay ekranı */
+.month-nav{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px}
+.month-nav button{font-size:28px;width:44px;height:44px;border-radius:12px;color:var(--accent)}
+.month-nav .t{font-size:19px;font-weight:600}
+.total{text-align:center;margin:6px 0 16px}.total .v{font-size:40px;font-weight:700;letter-spacing:-1px}.total .h{color:var(--muted);font-size:14px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:6px 14px;margin-bottom:14px}
+.row{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--line)}
+.row:last-child{border-bottom:0}
+.row .e{font-size:24px;width:30px;text-align:center}
+.row .m{flex:1;min-width:0}
+.row .n{font-weight:500}.row .s{font-size:13px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.row .a{font-weight:600;font-variant-numeric:tabular-nums;white-space:nowrap}
+.bar{height:6px;background:var(--bar);border-radius:3px;margin-top:6px;overflow:hidden}.bar i{display:block;height:100%;background:var(--accent);border-radius:3px}
+.day{font-size:13px;color:var(--muted);margin:14px 4px 6px;display:flex;justify-content:space-between}
+.empty-msg{text-align:center;color:var(--muted);padding:40px 20px}
+.big{display:block;width:100%;padding:14px;border-radius:14px;background:var(--accent);color:var(--accent-ink);font-weight:600;margin-bottom:10px;text-align:center}
+.big.g{background:var(--card);color:var(--ink);border:1px solid var(--line)}
+.note{font-size:14px;color:var(--muted);line-height:1.5}
+/* alt sayfa + bildirim */
+.sheet-bg{position:fixed;inset:0;background:rgba(0,0,0,.35);display:none;align-items:flex-end;z-index:5}
+.sheet-bg.on{display:flex}
+.sheet{background:var(--bg);width:100%;border-radius:20px 20px 0 0;padding:16px 16px calc(16px + env(safe-area-inset-bottom));max-height:80%;overflow-y:auto}
+.sheet h3{margin:4px 0 12px;font-size:18px}
+.sheet input[type=text]{width:100%;font:inherit;font-size:17px;padding:12px;border-radius:12px;border:1px solid var(--line);background:var(--card);color:var(--ink);margin-bottom:12px;-webkit-user-select:text;user-select:text}
+.toast{position:fixed;left:16px;right:16px;bottom:calc(76px + env(safe-area-inset-bottom));background:var(--ink);color:var(--bg);border-radius:14px;padding:12px 16px;display:none;justify-content:space-between;align-items:center;z-index:6;font-size:15px}
+.toast.on{display:flex}.toast button{color:var(--accent);font-weight:700}
+</style>
+</head>
+<body>
+<div class="app">
+  <!-- EKLE -->
+  <section class="screen on" id="s-add">
+    <div class="amount"><div class="v empty" id="amt">0 ₺</div><div class="h" id="amtHint">Tutarı yaz, sonra kategoriye dokun</div></div>
+    <div class="meta">
+      <span class="chip" id="dateChip">📅 <span id="dateTxt">Bugün</span><input type="date" id="dateIn" aria-label="Tarih"></span>
+      <button class="chip" id="noteChip">✏️ <span id="noteTxt">Not ekle</span></button>
+    </div>
+    <div class="keys" id="keys"></div>
+    <div class="lbl">Kategori</div>
+    <div class="cats off" id="cats"></div>
+  </section>
+  <!-- BU AY -->
+  <section class="screen" id="s-month">
+    <div class="month-nav"><button id="prevM" aria-label="Önceki ay">‹</button><span class="t" id="mTitle"></span><button id="nextM" aria-label="Sonraki ay">›</button></div>
+    <div class="total"><div class="v" id="mTotal"></div><div class="h" id="mHint"></div></div>
+    <div id="mCats"></div>
+  </section>
+  <!-- LİSTE -->
+  <section class="screen" id="s-list"><div class="month-nav"><span></span><span class="t" id="lTitle"></span><span></span></div><div id="list"></div></section>
+  <!-- AYARLAR -->
+  <section class="screen" id="s-more">
+    <h2 style="margin:6px 0 14px">Ayarlar</h2>
+    <button class="big" id="backupBtn">📤 Yedek al</button>
+    <button class="big g" id="restoreBtn">📥 Yedekten geri yükle</button>
+    <input type="file" id="restoreIn" accept="application/json,.json" hidden>
+    <p class="note">Harcamaların yalnızca bu telefonda saklanır, hiçbir yere gönderilmez. Telefon değiştirirken ya da ayda bir "Yedek al" ile dosyayı iCloud Drive'a kaydetmen önerilir.</p>
+    <p class="note" id="stats"></p>
+  </section>
+  <nav class="tabs">
+    <button class="on" data-s="add"><span class="i">➕</span>Ekle</button>
+    <button data-s="month"><span class="i">📊</span>Bu Ay</button>
+    <button data-s="list"><span class="i">📋</span>Liste</button>
+    <button data-s="more"><span class="i">⚙️</span>Ayarlar</button>
+  </nav>
+</div>
+<div class="sheet-bg" id="sheetBg"><div class="sheet" id="sheet"></div></div>
+<div class="toast" id="toast"><span id="toastTxt"></span><button id="toastBtn">Geri al</button></div>
+
+<script>
+"use strict";
+const CATS=[["market","🛒","Market"],["yemek","🍔","Yemek"],["ulasim","🚌","Ulaşım"],["fatura","💡","Fatura"],["kira","🏠","Kira"],["eglence","🎉","Eğlence"],["giyim","👕","Giyim"],["saglik","💊","Sağlık"],["diger","📦","Diğer"]];
+const CAT=Object.fromEntries(CATS.map(([k,e,n])=>[k,{e,n}]));
+const AYLAR=["Ocak","Şubat","Mart","Nisan","Mayıs","Haziran","Temmuz","Ağustos","Eylül","Ekim","Kasım","Aralık"];
+const KEY="harcamalar-v1";
+const $=id=>document.getElementById(id);
+const esc=s=>String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const tl=n=>n.toLocaleString("tr-TR",{minimumFractionDigits:n%1?2:0,maximumFractionDigits:2})+" ₺";
+const pad=n=>String(n).padStart(2,"0");
+const ymd=d=>`${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
+const haptic=()=>{try{navigator.vibrate&&navigator.vibrate(10)}catch(e){}};
+
+// ---- veri ----
+let items=[];
+function load(){try{items=JSON.parse(localStorage.getItem(KEY)||"[]")}catch(e){items=[]}}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(items))}catch(e){alert("Kaydedilemedi: telefon depolaması dolu olabilir.")}}
+load();
+try{navigator.storage&&navigator.storage.persist&&navigator.storage.persist()}catch(e){}
+
+// ---- ekle ekranı ----
+let entry="",note="",date=ymd(new Date());
+const KEYS=["1","2","3","4","5","6","7","8","9",",","0","⌫"];
+$("keys").innerHTML=KEYS.map(k=>`<button data-k="${k}">${k}</button>`).join("");
+$("cats").innerHTML=CATS.map(([k,e,n])=>`<button data-c="${k}"><span class="e">${e}</span>${n}</button>`).join("");
+function amountValue(){return entry?parseFloat(entry.replace(",",".")):0}
+function renderAmount(){
+  const v=amountValue(),el=$("amt");
+  const [ip,dp]=entry.split(",");
+  el.textContent=entry?Number(ip||0).toLocaleString("tr-TR")+(dp!==undefined?","+dp:"")+" ₺":"0 ₺";
+  el.classList.toggle("empty",!entry);
+  $("cats").classList.toggle("off",!(v>0));
+  $("amtHint").textContent=v>0?"Şimdi kategoriye dokun":"Tutarı yaz, sonra kategoriye dokun";
+}
+$("keys").addEventListener("click",e=>{const k=e.target.closest("button")?.dataset.k;if(!k)return;haptic();
+  if(k==="⌫")entry=entry.slice(0,-1);
+  else if(k===","){if(!entry.includes(","))entry=(entry||"0")+","}
+  else{const [i,d]=entry.split(",");if(d!==undefined&&d.length>=2)return;if(d===undefined&&i.length>=7)return;entry=entry==="0"?k:entry+k}
+  renderAmount()});
+function renderDate(){const t=ymd(new Date()),y=ymd(new Date(Date.now()-864e5));
+  const [Y,M,D]=date.split("-").map(Number);$("dateTxt").textContent=date===t?"Bugün":date===y?"Dün":`${D} ${AYLAR[M-1]}`;$("dateIn").value=date}
+$("dateIn").addEventListener("change",e=>{if(e.target.value){date=e.target.value;renderDate()}});
+$("noteChip").addEventListener("click",()=>openSheet(`<h3>Not</h3><input type="text" id="noteIn" placeholder="Örn. Migros, öğle yemeği" maxlength="60" value="${esc(note)}"><button class="big" id="noteOk">Tamam</button>`,()=>{
+  const i=$("noteIn");setTimeout(()=>i.focus(),50);const ok=()=>{note=i.value.trim();$("noteTxt").textContent=note||"Not ekle";closeSheet()};
+  $("noteOk").onclick=ok;i.onkeydown=e=>{if(e.key==="Enter")ok()}}));
+$("cats").addEventListener("click",e=>{const c=e.target.closest("button")?.dataset.c;if(!c)return;const v=amountValue();
+  if(!(v>0)){toast("Önce tutarı yaz",false);return}haptic();
+  const it={id:Date.now().toString(36)+Math.random().toString(36).slice(2,6),amount:Math.round(v*100)/100,cat:c,note,date,created:Date.now()};
+  items.push(it);save();entry="";note="";$("noteTxt").textContent="Not ekle";renderAmount();
+  toast(`${CAT[c].e} ${tl(it.amount)} kaydedildi`,true,()=>{items=items.filter(x=>x.id!==it.id);save();refresh()});refresh()});
+
+// ---- ay özeti ----
+let view=new Date();view.setDate(1);
+const monthKey=d=>`${d.getFullYear()}-${pad(d.getMonth()+1)}`;
+const inMonth=k=>items.filter(i=>i.date.startsWith(k));
+function renderMonth(){
+  const k=monthKey(view),L=inMonth(k),total=L.reduce((a,b)=>a+b.amount,0);
+  $("mTitle").textContent=`${AYLAR[view.getMonth()]} ${view.getFullYear()}`;
+  $("mTotal").textContent=tl(total);
+  const now=new Date(),isCur=k===monthKey(now),days=isCur?now.getDate():new Date(view.getFullYear(),view.getMonth()+1,0).getDate();
+  $("mHint").textContent=L.length?`${L.length} harcama · günlük ortalama ${tl(Math.round(total/days))}`:"";
+  $("nextM").style.visibility=isCur?"hidden":"visible";
+  const by={};L.forEach(i=>by[i.cat]=(by[i.cat]||0)+i.amount);
+  const rows=Object.entries(by).sort((a,b)=>b[1]-a[1]);
+  $("mCats").innerHTML=rows.length?`<div class="card">${rows.map(([c,v])=>{const p=Math.round(v/total*100);return`<div class="row" data-c="${c}"><span class="e">${CAT[c].e}</span><div class="m"><div class="n">${CAT[c].n}</div><div class="bar"><i style="width:${Math.max(p,2)}%"></i></div></div><div style="text-align:right"><div class="a">${tl(v)}</div><div class="s">%${p}</div></div></div>`}).join("")}</div>`
+    :`<div class="empty-msg">Bu ay henüz harcama yok.<br>"Ekle" sekmesinden ilk harcamanı gir.</div>`;
+}
+$("prevM").onclick=()=>{view.setMonth(view.getMonth()-1);refresh()};
+$("nextM").onclick=()=>{view.setMonth(view.getMonth()+1);refresh()};
+$("mCats").addEventListener("click",e=>{const c=e.target.closest(".row")?.dataset.c;if(!c)return;
+  const L=inMonth(monthKey(view)).filter(i=>i.cat===c).sort((a,b)=>b.date.localeCompare(a.date)||b.created-a.created);
+  openSheet(`<h3>${CAT[c].e} ${CAT[c].n} — ${AYLAR[view.getMonth()]}</h3><div class="card">${L.map(rowHtml).join("")}</div>`)});
+
+// ---- liste ----
+function rowHtml(i){const [Y,M,D]=i.date.split("-").map(Number);return`<div class="row" data-id="${i.id}"><span class="e">${CAT[i.cat].e}</span><div class="m"><div class="n">${CAT[i.cat].n}</div><div class="s">${D} ${AYLAR[M-1]}${i.note?" · "+esc(i.note):""}</div></div><span class="a">${tl(i.amount)}</span></div>`}
+function renderList(){
+  const k=monthKey(view);$("lTitle").textContent=`${AYLAR[view.getMonth()]} ${view.getFullYear()}`;
+  const L=inMonth(k).sort((a,b)=>b.date.localeCompare(a.date)||b.created-a.created);
+  if(!L.length){$("list").innerHTML='<div class="empty-msg">Bu ay kayıt yok.</div>';return}
+  const g={};L.forEach(i=>(g[i.date]=g[i.date]||[]).push(i));
+  $("list").innerHTML=Object.entries(g).map(([d,arr])=>{const [Y,M,D]=d.split("-").map(Number);const t=ymd(new Date());
+    return`<div class="day"><span>${d===t?"Bugün":`${D} ${AYLAR[M-1]}`}</span><span>${tl(arr.reduce((a,b)=>a+b.amount,0))}</span></div><div class="card">${arr.map(rowHtml).join("")}</div>`}).join("")+'<p class="note" style="text-align:center">Silmek için harcamaya dokun.</p>';
+}
+document.addEventListener("click",e=>{const r=e.target.closest(".row[data-id]");if(!r)return;const it=items.find(x=>x.id===r.dataset.id);if(!it)return;
+  openSheet(`<h3>${CAT[it.cat].e} ${tl(it.amount)}</h3><p class="note">${esc(it.note||"Not yok")} · ${it.date.split("-").reverse().join(".")}</p><button class="big" style="background:var(--danger);color:#fff" id="delOk">Bu harcamayı sil</button><button class="big g" id="delNo">Vazgeç</button>`,()=>{
+    $("delNo").onclick=closeSheet;$("delOk").onclick=()=>{items=items.filter(x=>x.id!==it.id);save();closeSheet();refresh();toast("Silindi",true,()=>{items.push(it);save();refresh()})}})});
+
+// ---- yedek ----
+$("backupBtn").onclick=async()=>{const blob=new Blob([JSON.stringify({app:"harcamalarim",v:1,items},null,1)],{type:"application/json"});
+  const name=`harcamalar-${ymd(new Date())}.json`,file=new File([blob],name,{type:"application/json"});
+  try{if(navigator.canShare&&navigator.canShare({files:[file]})){await navigator.share({files:[file],title:"Harcama yedeği"});return}}catch(e){if(e.name==="AbortError")return}
+  const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),2000)};
+$("restoreBtn").onclick=()=>$("restoreIn").click();
+$("restoreIn").onchange=async e=>{const f=e.target.files[0];if(!f)return;try{const d=JSON.parse(await f.text());const L=Array.isArray(d)?d:d.items;
+  if(!Array.isArray(L)||!L.every(i=>i&&typeof i.amount==="number"&&CAT[i.cat]&&/^\d{4}-\d\d-\d\d$/.test(i.date)))throw 0;
+  const ids=new Set(items.map(i=>i.id));const add=L.filter(i=>!ids.has(i.id));items.push(...add);save();refresh();toast(`${add.length} harcama geri yüklendi`,false)}
+  catch(err){alert("Bu dosya geçerli bir yedek değil.")}e.target.value=""};
+
+// ---- ortak ----
+function openSheet(html,after){$("sheet").innerHTML=html;$("sheetBg").classList.add("on");after&&after()}
+function closeSheet(){$("sheetBg").classList.remove("on")}
+$("sheetBg").addEventListener("click",e=>{if(e.target.id==="sheetBg")closeSheet()});
+let tt;function toast(t,undo,fn){$("toastTxt").textContent=t;$("toastBtn").style.display=undo?"":"none";$("toastBtn").onclick=()=>{fn&&fn();$("toast").classList.remove("on")};
+  $("toast").classList.add("on");clearTimeout(tt);tt=setTimeout(()=>$("toast").classList.remove("on"),4000)}
+document.querySelector(".tabs").addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;
+  document.querySelectorAll(".tabs button").forEach(x=>x.classList.toggle("on",x===b));
+  document.querySelectorAll(".screen").forEach(s=>s.classList.toggle("on",s.id==="s-"+b.dataset.s));refresh()});
+function refresh(){renderMonth();renderList();$("stats").textContent=`Toplam ${items.length} kayıt saklanıyor.`}
+renderAmount();renderDate();refresh();
+// gece yarısı geçince "Bugün" tarihi kendini güncellesin
+document.addEventListener("visibilitychange",()=>{if(!document.hidden&&!entry){date=ymd(new Date());renderDate();refresh()}});
+if("serviceWorker" in navigator&&location.protocol!=="file:")navigator.serviceWorker.register("sw.js").catch(()=>{});
+</script>
+</body>
+</html>
