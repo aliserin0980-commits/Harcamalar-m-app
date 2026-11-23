@@ -1,5 +1,5 @@
 // İnternetsiz açılış için uygulama dosyalarını önbelleğe alır. Sürüm değişince eski önbellek silinir.
-const CACHE = "harcamalarim-v6";
+const CACHE = "harcamalarim-v7";
 const FILES = ["./", "index.html", "manifest.webmanifest", "icon-180.png", "icon-192.png", "icon-512.png"];
 // Bu dosya eksik olsa da kurulum düşmesin diye addAll dışında, ayrıca eklenir
 const OPTIONAL = "icon-maskable-512.png";

@@ -173,9 +173,13 @@ const CATS={
   internet:{e:"🌐",n:"İnternet",g:"fatura"},telefon:{e:"📱",n:"Telefon",g:"fatura"},
   kira:{e:"🏠",n:"Kira"},eglence:{e:"🎉",n:"Eğlence"},
   giyim:{e:"👕",n:"Giyim"},saglik:{e:"💊",n:"Sağlık"},diger:{e:"📦",n:"Diğer"},
+  // yalnız kişisel (Klinik menüsünde yok)
+  bicakisi:{e:"🔪",n:"Bıçak işi"},saatisi:{e:"🕰️",n:"Saat işi"},
   // klinik › firmalar
   vip:{e:"🏬",n:"Vip Depo",s:"klinik",g:"depolar"},acar:{e:"🏬",n:"Acar Depo",s:"klinik",g:"depolar"},
   megavet:{e:"🏬",n:"Megavet Depo",s:"klinik",g:"depolar"},depofarma:{e:"🏬",n:"Depo Farma",s:"klinik",g:"depolar"},
+  vetmed:{e:"🏬",n:"Vetmed",s:"klinik",g:"depolar"},ozgevetlab:{e:"🏬",n:"Özge Vetlab",s:"klinik",g:"depolar"},
+  istvet:{e:"🏬",n:"İstvet Depo",s:"klinik",g:"depolar"},
   royal:{e:"🐾",n:"Royal Canin",s:"klinik",g:"mama"},virbac:{e:"🐾",n:"Virbac",s:"klinik",g:"mama"},
   vetux:{e:"🐾",n:"Vetux",s:"klinik",g:"mama"},zootopia:{e:"🐾",n:"Zootopia",s:"klinik",g:"mama"},
   // klinik › personel
@@ -194,12 +198,14 @@ const CATS={
 const GROUPS={depolar:"🏬 Depolar",mama:"🐾 Mama ve Takviyeler",personel:"👥 Personel",vergi:"🏛️ Vergi ve devlet",arac:"🚗 Araç",fatura:"💡 Faturalar",genel:"🧾 Günlük giderler"};
 const FATURALAR=["elektrik","su","dogalgaz","internet","telefon","fatura"];
 const DAILY=["market","yemek","ulasim",["@faturalar","💡","Faturalar"],"kira","eglence","giyim","saglik","diger"];
+// Kişisel menüsü: günlükler + yalnız kişisele ait işler ("Diğer" en sonda kalır)
+const KISISEL=[...DAILY.slice(0,-1),"bicakisi","saatisi","diger"];
 // menü: "@x" = klasör, {h:"..."} = başlık
 const MENU={
   root:{t:"Nereye harcadın?",items:[["@klinik","🏥","Klinik"],["@kisisel","🙋","Kişisel"]]},
-  kisisel:{t:"🙋 Kişisel",items:DAILY},
+  kisisel:{t:"🙋 Kişisel",items:KISISEL},
   klinik:{t:"🏥 Klinik",items:[["@firmalar","🏢","Firmalar"],["@personel","👥","Personel"],["@vergi","🏛️","Vergi ve devlet"],["@arac","🚗","Araç"],{h:"Günlük giderler"},...DAILY]},
-  firmalar:{t:"🏥 Klinik › Firmalar",items:[{h:"Depolar"},"vip","acar","megavet","depofarma",{h:"Mama ve Takviyeler"},"royal","virbac","vetux","zootopia"]},
+  firmalar:{t:"🏥 Klinik › Firmalar",items:[{h:"Depolar"},"vip","acar","megavet","depofarma","vetmed","ozgevetlab","istvet",{h:"Mama ve Takviyeler"},"royal","virbac","vetux","zootopia"]},
   personel:{t:"🏥 Klinik › Personel",items:["maas","sgk","multinet"]},
   vergi:{t:"🏥 Klinik › Vergi ve devlet",items:["kdv","muhtasar","gelirvergisi","bagkur","belediye","harc"]},
   arac:{t:"🏥 Klinik › Araç",items:["yakit","hgs","ceza","bakim","kasko","mtv","otopark"]},
