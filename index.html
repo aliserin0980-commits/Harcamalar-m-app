@@ -488,7 +488,7 @@ function syncMonth(){const now=monthKey(new Date());if(now===curMonth)return fal
   const onCur=monthKey(view)===curMonth;curMonth=now;if(onCur){view=new Date();view.setDate(1)}return onCur}
 document.addEventListener("visibilitychange",()=>{if(document.hidden)return;const moved=syncMonth();
   if(!entry){date=today();renderMeta();refresh()}else if(moved)refresh()});
-if("serviceWorker" in navigator&&location.protocol!=="file:")navigator.serviceWorker.register("sw.js").catch(()=>{});
+if("serviceWorker" in navigator&&location.protocol!=="file:")navigator.serviceWorker.register("sw.js",{updateViaCache:"none"}).catch(()=>{});
 </script>
 </body>
 </html>

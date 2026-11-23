@@ -1,12 +1,14 @@
 // İnternetsiz açılış için uygulama dosyalarını önbelleğe alır. Sürüm değişince eski önbellek silinir.
-const CACHE = "harcamalarim-v7";
+const CACHE = "harcamalarim-v8";
 const FILES = ["./", "index.html", "manifest.webmanifest", "icon-180.png", "icon-192.png", "icon-512.png"];
 // Bu dosya eksik olsa da kurulum düşmesin diye addAll dışında, ayrıca eklenir
 const OPTIONAL = "icon-maskable-512.png";
 
+// cache:"reload": kurulumda tarayıcının HTTP önbelleğindeki eski kopya değil, sunucudaki güncel dosya alınır
+const taze = f => new Request(f, { cache: "reload" });
 self.addEventListener("install", e => {
   e.waitUntil(caches.open(CACHE)
-    .then(c => c.addAll(FILES).then(() => c.add(OPTIONAL).catch(() => {})))
+    .then(c => c.addAll(FILES.map(taze)).then(() => c.add(taze(OPTIONAL)).catch(() => {})))
     .then(() => self.skipWaiting()));
 });
 self.addEventListener("activate", e => {
@@ -14,12 +16,13 @@ self.addEventListener("activate", e => {
     .then(() => self.clients.claim()));
 });
 // Önce ağ (güncelleme varsa gelsin), ağ yoksa önbellek.
+// cache:"no-cache": GitHub Pages'in 10 dk'lık HTTP önbelleği atlanır, sunucuya doğrulatılır (değişmemişse 304, hızlı).
 // Yalnız bu uygulamanın kapsamındaki istekler işlenir; aynı origin'deki başka uygulamalara dokunulmaz.
 self.addEventListener("fetch", e => {
   const req = e.request;
   if (req.method !== "GET" || !req.url.startsWith(self.registration.scope)) return;
   e.respondWith(
-    fetch(req).then(r => {
+    fetch(req, { cache: "no-cache" }).then(r => {
       // Yalnız başarılı cevaplar önbelleğe yazılır (404/500 yazılmaz)
       if (r.ok) {
         const copy = r.clone();
